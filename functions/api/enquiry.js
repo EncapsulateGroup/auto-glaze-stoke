@@ -78,6 +78,11 @@ async function sendEmail(fields, env, request) {
 }
 
 export async function onRequestPost({ request, env }) {
+  const contentLength = Number(request.headers.get("Content-Length") || 0);
+  if (contentLength > 50_000) {
+    return json({ ok: false, message: "The submitted form is too large." }, 413);
+  }
+
   let data;
   try {
     data = await request.formData();
@@ -104,6 +109,16 @@ export async function onRequestPost({ request, env }) {
 
   if (!emailPattern.test(fields.email)) {
     return json({ ok: false, message: "Please enter a valid email address." }, 400);
+  }
+
+  if (
+    fields.name.length > 100 ||
+    fields.company.length > 120 ||
+    fields.phone.length > 30 ||
+    fields.email.length > 254 ||
+    fields.message.length > 3000
+  ) {
+    return json({ ok: false, message: "One or more fields are too long. Please shorten your message and try again." }, 400);
   }
 
   const turnstileOk = await verifyTurnstile(text(data.get("cf-turnstile-response")), env, request);

@@ -49,13 +49,13 @@ The live Turnstile widget/site key still needs to be added once the Cloudflare P
 
 ## Validation Run
 
-Run before deployment:
+Run before deployment from the project root:
 
 ```sh
-/Users/danni/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node scripts/check-site.mjs
-/Users/danni/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check public/assets/js/main.js
-/Users/danni/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check public/assets/js/form-placeholder.js
-/Users/danni/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check functions/api/enquiry.js
+npm run check
+node --check public/assets/js/main.js
+node --check public/assets/js/form-placeholder.js
+node --check functions/api/enquiry.js
 ```
 
 ## Deployment Notes

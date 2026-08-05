@@ -14,7 +14,9 @@ Forms submit to `/api/enquiry`, a Cloudflare Pages Function that validates requi
 
 ## Current Status
 
-The homepage has had the most detailed refinement so far. The image pass was updated from the original WordPress export rather than guessed placeholder images, and the `Why Choose Autoglaze` section has been rebuilt to better match the Elementor layering.
+All public routes now share the same navigation, typography, contrast, hero, transition, contact and responsive systems. Page-specific hero photography is stored locally, the Our Work galleries are keyboard-accessible and scrollable, the FAQ uses accessible disclosure controls, and the contact forms share one validated endpoint.
+
+The homepage About Us section intentionally remains a white surface with black typography. Preserve that treatment unless the client explicitly changes the requirement.
 
 The written content should remain unchanged unless the client specifically asks for copy edits.
 
@@ -40,7 +42,7 @@ Use the Elementor data in the SQL export as the source of truth for page images 
 - Our Work gallery image order
 - FAQ and Contact hero backgrounds
 
-## Refinement Process To Continue
+## Refinement Process
 
 The closest match came from treating each complex Elementor section as its own composition, not as a reusable generic two-column block.
 
