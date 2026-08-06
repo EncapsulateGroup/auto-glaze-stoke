@@ -3787,3 +3787,62 @@ html body .side-panel-cta:hover,
 html body main .gallery-control:hover {
   background: var(--brand-red) !important;
 }
+
+/* Restore subtle homepage image depth after the palette lock. */
+
+html body.home-page main > section.fleet-section {
+  background:
+    linear-gradient(90deg, rgba(246, 246, 244, 0.96) 0%, rgba(246, 246, 244, 0.9) 52%, rgba(246, 246, 244, 0.76) 100%),
+    url("../img/job-1.jpg") center center / cover no-repeat !important;
+  background-color: #f6f6f4 !important;
+}
+
+html body.home-page main > section.fleet-section::before {
+  display: block !important;
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  background:
+    linear-gradient(120deg, transparent 0%, transparent 52%, rgba(63, 194, 82, 0.1) 52%, rgba(63, 194, 82, 0.1) 64%, transparent 64%),
+    linear-gradient(rgba(255, 255, 255, 0.18), transparent 48%) !important;
+  pointer-events: none !important;
+}
+
+html body.home-page main > section.fleet-section > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+html body.home-page main > section.workshop-cta {
+  background:
+    linear-gradient(90deg, rgba(8, 8, 8, 0.86) 0%, rgba(20, 20, 20, 0.7) 54%, rgba(8, 8, 8, 0.82) 100%),
+    url("../img/workshop-wide.jpg") center center / cover no-repeat !important;
+  background-color: #141414 !important;
+  color: #101010 !important;
+}
+
+html body.home-page main > section.workshop-cta::before {
+  display: block !important;
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  height: auto !important;
+  background:
+    radial-gradient(circle at 42% 38%, rgba(63, 194, 82, 0.16), transparent 38%),
+    linear-gradient(135deg, rgba(237, 30, 37, 0.08), transparent 42%) !important;
+  transform: none !important;
+  pointer-events: none !important;
+}
+
+html body.home-page main > section.workshop-cta > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+html body.home-page main > section.workshop-cta .cta-panel {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+  box-shadow: rgba(0, 0, 0, 0.34) 0px 30px 88px !important;
+}
