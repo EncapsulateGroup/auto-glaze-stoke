@@ -4192,3 +4192,53 @@ html body.repair-page main > section.section.dark:has(.chip-copy) .chip-guide {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* Global sidebar behaviour: sticky service sidebars, contact page remains static. */
+
+html body:not(.contact-page) main .repair-intro-section {
+  overflow: visible !important;
+}
+
+html body:not(.contact-page) main .repair-intro-section .sidebar-layout {
+  align-items: start !important;
+}
+
+html body:not(.contact-page) main .repair-intro-section .side-panel {
+  position: sticky !important;
+  top: 112px !important;
+  align-self: start !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: calc(100vh - 136px) !important;
+}
+
+html body:not(.contact-page) main .repair-intro-section > .sidebar-layout > .side-panel,
+html body:not(.contact-page) main .repair-intro-section > .container.sidebar-layout > .side-panel {
+  position: sticky !important;
+  top: 112px !important;
+  align-self: start !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: calc(100vh - 136px) !important;
+}
+
+html body:not(.contact-page) main .repair-intro-section > .sidebar-layout,
+html body:not(.contact-page) main .repair-intro-section > .container.sidebar-layout {
+  align-items: start !important;
+  overflow: visible !important;
+}
+
+html body.repair-page main > section.section.dark:has(.chip-copy) .chip-guide img {
+  width: 100% !important;
+  height: 130px !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+}
+
+@media (max-width: 980px) {
+  html body:not(.contact-page) main .repair-intro-section .side-panel {
+    position: static !important;
+    top: auto !important;
+  }
+}
