@@ -4048,3 +4048,147 @@ html body.repair-page main > section.section.dark:has(.chip-guide) > .container 
     background-attachment: scroll !important;
   }
 }
+
+/* Repair page tightening: compact chip guide and restore sticky sidebar. */
+
+html body.repair-page main .repair-intro-section .side-panel {
+  position: sticky !important;
+  top: 112px !important;
+  align-self: start !important;
+}
+
+html body.repair-page main > section.section.dark:has(.chip-guide) {
+  padding: clamp(28px, 3.6vw, 44px) 0 !important;
+  background: #ffffff !important;
+}
+
+html body.repair-page main > section.section.dark:has(.chip-guide) > .container {
+  width: min(1120px, calc(100% - 48px)) !important;
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(390px, 0.9fr) minmax(500px, 1.1fr) !important;
+  grid-template-rows: auto auto !important;
+  grid-template-areas:
+    "title guide"
+    "copy guide" !important;
+  column-gap: clamp(22px, 3.4vw, 40px) !important;
+  row-gap: 10px !important;
+  align-items: center !important;
+  align-content: center !important;
+  padding: clamp(20px, 2.4vw, 28px) !important;
+  border-radius: 18px !important;
+  background: #f6f6f4 !important;
+  box-shadow: rgba(16, 16, 16, 0.06) 0 18px 56px !important;
+}
+
+html body.repair-page main > section.section.dark:has(.chip-guide) h2 {
+  grid-area: title !important;
+  max-width: 22ch !important;
+  margin: 0 !important;
+  font-size: clamp(1.55rem, 2.05vw, 2.1rem) !important;
+  line-height: 1.04 !important;
+}
+
+html body.repair-page main > section.section.dark:has(.chip-guide) > .container > p {
+  grid-area: copy !important;
+  max-width: 42ch !important;
+  margin: 10px 0 0 !important;
+  font-size: 0.94rem !important;
+  line-height: 1.45 !important;
+}
+
+html body.repair-page main .chip-guide {
+  grid-area: guide !important;
+  min-height: 0 !important;
+  padding: clamp(18px, 2vw, 24px) !important;
+  grid-template-columns: minmax(170px, 0.68fr) minmax(240px, 1fr) !important;
+  gap: clamp(18px, 2.2vw, 28px) !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body.repair-page main .chip-guide ul {
+  gap: 10px !important;
+}
+
+html body.repair-page main .chip-guide img {
+  max-height: 130px !important;
+}
+
+@media (max-width: 980px) {
+  html body.repair-page main .repair-intro-section .side-panel {
+    position: static !important;
+    top: auto !important;
+  }
+
+  html body.repair-page main > section.section.dark:has(.chip-guide) > .container,
+  html body.repair-page main .chip-guide {
+    grid-template-columns: 1fr !important;
+  }
+
+  html body.repair-page main .chip-guide {
+    grid-area: auto !important;
+  }
+}
+
+/* Chip guide grouped markup: compact one-row treatment. */
+
+html body.repair-page main > section.section.dark:has(.chip-copy) {
+  padding: clamp(28px, 3.4vw, 42px) 0 !important;
+  background: #ffffff !important;
+}
+
+html body.repair-page main > section.section.dark:has(.chip-copy) > .container {
+  width: min(1120px, calc(100% - 48px)) !important;
+  margin-inline: auto !important;
+  padding: clamp(22px, 2.5vw, 30px) !important;
+  display: grid !important;
+  grid-template-columns: minmax(360px, 0.82fr) minmax(500px, 1.18fr) !important;
+  grid-template-rows: auto !important;
+  grid-template-areas: none !important;
+  column-gap: clamp(24px, 3vw, 42px) !important;
+  row-gap: 0 !important;
+  align-items: center !important;
+  text-align: left !important;
+  border-radius: 18px !important;
+  background: #f6f6f4 !important;
+  box-shadow: rgba(16, 16, 16, 0.06) 0 18px 56px !important;
+}
+
+html body.repair-page main .chip-copy {
+  display: block !important;
+  max-width: 430px !important;
+}
+
+html body.repair-page main .chip-copy h2 {
+  grid-area: auto !important;
+  max-width: none !important;
+  margin: 0 0 10px !important;
+  font-size: clamp(1.55rem, 2.05vw, 2.1rem) !important;
+  line-height: 1.04 !important;
+}
+
+html body.repair-page main .chip-copy p {
+  grid-area: auto !important;
+  max-width: 42ch !important;
+  margin: 0 !important;
+  font-size: 0.94rem !important;
+  line-height: 1.45 !important;
+}
+
+html body.repair-page main > section.section.dark:has(.chip-copy) .chip-guide {
+  grid-area: auto !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: clamp(18px, 2vw, 24px) !important;
+  grid-template-columns: minmax(170px, 0.68fr) minmax(240px, 1fr) !important;
+  gap: clamp(18px, 2.2vw, 28px) !important;
+}
+
+@media (max-width: 900px) {
+  html body.repair-page main > section.section.dark:has(.chip-copy) > .container,
+  html body.repair-page main > section.section.dark:has(.chip-copy) .chip-guide {
+    grid-template-columns: 1fr !important;
+  }
+}
