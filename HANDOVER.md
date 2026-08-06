@@ -13,7 +13,7 @@ autoglaze-stoke-static
 ## Build Settings
 
 ```text
-Build command: none
+Build command: npm run build
 Build output directory: public
 Functions directory: functions
 ```
@@ -35,11 +35,21 @@ Required Cloudflare secret:
 
 ```text
 BREVO_API_KEY
+TURNSTILE_SECRET_KEY
+```
+
+Required Cloudflare variables:
+
+```text
+TURNSTILE_SITE_KEY
+BREVO_FROM_EMAIL=yourwebsite@autoglaze-stoke.co.uk
+ENQUIRY_NOTIFICATION_TO=lee@autoglaze-stoke.co.uk
+ENQUIRY_SITE_NAME="AutoGlaze Stoke"
 ```
 
 ## Turnstile
 
-The server-side Turnstile validation is supported when this Cloudflare secret is added:
+The server-side Turnstile validation fails closed until this Cloudflare secret is added:
 
 ```text
 TURNSTILE_SECRET_KEY
@@ -54,13 +64,17 @@ Run before deployment from the project root:
 ```sh
 npm run check
 node --check public/assets/js/main.js
-node --check public/assets/js/form-placeholder.js
 node --check functions/api/enquiry.js
+node --check functions/api/form-config.js
 ```
+
+## Policy And Cookie Notes
+
+The site currently embeds Google Maps directly. Before final live sign-off, add client-approved Privacy Policy and Cookie Policy wording, then either add cookie consent for optional embeds or replace embedded maps with direct map links.
 
 ## Deployment Notes
 
 - Keep secrets in Cloudflare only.
 - Do not commit `.env`, `.dev.vars`, API keys, Turnstile secrets or WordPress backups.
-- Confirm a live test enquiry reaches `lee@autoglaze-stoke.co.uk` after `BREVO_API_KEY` is configured.
+- Confirm a live test enquiry reaches `lee@autoglaze-stoke.co.uk` after `BREVO_API_KEY` and Turnstile are configured.
 - Confirm Turnstile behaviour after the widget/site key and `TURNSTILE_SECRET_KEY` are configured.

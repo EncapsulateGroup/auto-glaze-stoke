@@ -337,9 +337,192 @@ textarea { min-height: 105px; resize: vertical; }
 
 .honeypot { position: absolute; left: -9999px; opacity: 0; pointer-events: none; }
 
+.form-turnstile { margin: 14px 0 0; }
+
 .form-status { min-height: 22px; margin: 12px 0px; color: var(--green); font-size: 0.9rem; font-weight: 700; }
 
 .form-status.is-error { color: var(--red); }
+
+.submit:disabled { cursor: wait; opacity: 0.72; }
+
+.map-card[data-cookie-embed] {
+  position: relative;
+  min-height: 320px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(16, 16, 16, 0.92), rgba(42, 42, 42, 0.88));
+}
+
+.map-card[data-cookie-embed] iframe {
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  border: 0;
+}
+
+.map-card[data-cookie-embed] iframe:not([src]) {
+  visibility: hidden;
+}
+
+.cookie-embed-placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  gap: 12px;
+  padding: 28px;
+  color: #fff;
+  background:
+    linear-gradient(120deg, rgba(13, 13, 13, 0.9), rgba(42, 42, 42, 0.76)),
+    url("../img/footer-bg.jpg") center / cover no-repeat;
+}
+
+.cookie-embed-placeholder[hidden] {
+  display: none;
+}
+
+.cookie-embed-placeholder strong {
+  max-width: 34ch;
+  font-family: var(--heading);
+  font-size: 1.45rem;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.cookie-embed-placeholder p {
+  max-width: 46ch;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.cookie-embed-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.cookie-banner {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 1200;
+  width: min(680px, calc(100vw - 44px));
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: start;
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(15, 15, 15, 0.98), rgba(42, 42, 42, 0.96));
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+  color: #fff;
+}
+
+.cookie-banner.is-hidden {
+  display: none;
+}
+
+.cookie-banner strong {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--heading);
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+
+.cookie-banner p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.cookie-banner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.cookie-banner-actions a,
+.footer-cookie-settings,
+.cookie-floating-settings {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: rgb(127, 224, 143);
+  font: inherit;
+  font-weight: 800;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.cookie-banner .btn-ghost {
+  color: #2a2a2a !important;
+}
+
+.cookie-floating-settings {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 1100;
+  display: none;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(20, 20, 20, 0.94);
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.22);
+}
+
+.cookie-floating-settings.is-visible {
+  display: inline-flex;
+}
+
+.footer-cookie-settings {
+  display: inline-block;
+  margin-top: 12px;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.policy-section {
+  padding: clamp(56px, 7vw, 96px) 0;
+  background: #fff;
+}
+
+.policy-section .content-panel {
+  padding: clamp(32px, 5vw, 58px);
+}
+
+.policy-section h2,
+.policy-section h3 {
+  color: #0e0e0e;
+}
+
+.policy-section h3 {
+  margin: 32px 0 10px;
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+}
+
+html body:not(.contact-page) main .contact-grid > .map-card {
+  display: none !important;
+}
+
+@media (max-width: 760px) {
+  .cookie-banner {
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    width: auto;
+    grid-template-columns: 1fr;
+  }
+
+  .cookie-banner-actions {
+    justify-content: flex-start;
+  }
+}
 
 .site-footer { background-color: var(--charcoal); background-image: linear-gradient(rgba(42, 42, 42, 0.9), rgba(42, 42, 42, 0.9)), url("../img/footer-bg.jpg"); background-position: center center; background-size: cover; }
 
@@ -3562,6 +3745,27 @@ html body.faq-page main .cta-band.text-cta {
   }
 }
 
+/* Content parity: keep the original "Additional Services" label visible in the services list without styling it as a service pill. */
+html body.our-work-page main > .service-overview .unified-service-list .service-subheading {
+  min-height: auto !important;
+  grid-column: 1 / -1 !important;
+  margin: 8px 0 -2px !important;
+  padding: 4px 0 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--green) !important;
+  font-size: 0.78rem !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+}
+
+html body.our-work-page main > .service-overview .unified-service-list .service-subheading::before {
+  display: none !important;
+}
+
 /* Inner page hero refinement: compact, parallax-style heroes with wider text blocks. */
 
 html body:not(.home-page) main > section.hero.short {
@@ -4288,6 +4492,45 @@ html body.replacement-page main .repair-intro-section .side-panel .side-list li:
   transform: translateY(-50%) !important;
 }
 
+/* Service sidebar containment: sticky panels scroll inside themselves instead of bleeding into lower sections. */
+
+html body.repair-page main .repair-intro-section .sidebar-layout,
+html body.replacement-page main .repair-intro-section .sidebar-layout {
+  align-items: start !important;
+  overflow: visible !important;
+}
+
+html body.repair-page main .repair-intro-section .side-panel,
+html body.replacement-page main .repair-intro-section .side-panel {
+  position: sticky !important;
+  top: 112px !important;
+  align-self: start !important;
+  height: auto !important;
+  max-height: calc(100vh - 136px) !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+}
+
+html body.repair-page main .repair-intro-section .side-panel::-webkit-scrollbar,
+html body.replacement-page main .repair-intro-section .side-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+html body.repair-page main .repair-intro-section .side-panel::-webkit-scrollbar-thumb,
+html body.replacement-page main .repair-intro-section .side-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+}
+
+@media (max-width: 980px) {
+  html body.repair-page main .repair-intro-section .side-panel,
+  html body.replacement-page main .repair-intro-section .side-panel {
+    position: static !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+
 html body.page-transition-enabled.page-ready main {
   transform: none !important;
 }
@@ -4327,4 +4570,672 @@ html body.replacement-page main > section.cta-band.text-cta > * {
 
 html body.replacement-page main > section.cta-band.text-cta :where(h1, h2, h3, p, strong) {
   color: #ffffff !important;
+}
+
+/* Our Work CTA restore: image-backed strip with a compact eyebrow/header stack. */
+
+html body.our-work-page main > section.cta-band.text-cta {
+  isolation: isolate !important;
+  min-height: 0 !important;
+  padding: clamp(70px, 7vw, 96px) max(7vw, calc((100vw - 1180px) / 2)) !important;
+  display: grid !important;
+  grid-template-columns: minmax(280px, 0.82fr) minmax(420px, 1fr) !important;
+  grid-template-rows: auto auto auto !important;
+  gap: 10px clamp(44px, 6vw, 96px) !important;
+  align-items: center !important;
+  background:
+    linear-gradient(90deg, rgba(10, 10, 10, 0.9) 0%, rgba(20, 20, 20, 0.78) 52%, rgba(10, 10, 10, 0.9) 100%),
+    url("../img/upload-hero-work-optimized.jpg") center center / cover no-repeat !important;
+  background-color: #151515 !important;
+  color: #ffffff !important;
+}
+
+html body.our-work-page main > section.cta-band.text-cta::before {
+  grid-area: 1 / 1 !important;
+  align-self: end !important;
+  margin: 0 0 8px !important;
+  padding: 0 !important;
+  color: var(--brand-green) !important;
+  font-size: clamp(0.68rem, 0.82vw, 0.78rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0.12em !important;
+}
+
+html body.our-work-page main > section.cta-band.text-cta::after {
+  display: block !important;
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  background:
+    radial-gradient(circle at 24% 52%, rgba(63, 194, 82, 0.18), transparent 32%),
+    linear-gradient(135deg, rgba(237, 30, 37, 0.08), transparent 46%) !important;
+  pointer-events: none !important;
+}
+
+html body.our-work-page main > section.cta-band.text-cta > h2 {
+  grid-area: 2 / 1 !important;
+  max-width: 520px !important;
+  margin: 0 !important;
+  color: #ffffff !important;
+  font-size: clamp(2.25rem, 4vw, 4rem) !important;
+  line-height: 0.96 !important;
+  letter-spacing: -0.045em !important;
+}
+
+html body.our-work-page main > section.cta-band.text-cta > p {
+  grid-area: 1 / 2 / span 2 !important;
+  max-width: 660px !important;
+  margin: 0 !important;
+  padding: clamp(24px, 3vw, 36px) !important;
+  border-left: 4px solid var(--brand-green) !important;
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: rgba(0, 0, 0, 0.22) 0 24px 70px !important;
+  color: #1b1b1b !important;
+}
+
+html body.our-work-page main > section.cta-band.text-cta > p strong {
+  color: #101010 !important;
+}
+
+html body.our-work-page main > section.cta-band.text-cta > .btn {
+  grid-area: 3 / 2 !important;
+  justify-self: start !important;
+  margin-top: 8px !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+html body.our-work-page main > section.cta-band.text-cta > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+@media (max-width: 860px) {
+  html body.our-work-page main > section.cta-band.text-cta {
+    grid-template-columns: 1fr !important;
+    padding: 56px 24px !important;
+  }
+
+  html body.our-work-page main > section.cta-band.text-cta::before,
+  html body.our-work-page main > section.cta-band.text-cta > h2,
+  html body.our-work-page main > section.cta-band.text-cta > p,
+  html body.our-work-page main > section.cta-band.text-cta > .btn {
+    grid-area: auto / 1 !important;
+  }
+}
+
+/* Our Work services block: align the intro column to the contact column below. */
+
+html body.our-work-page main > section.service-overview > .container {
+  grid-template-columns: minmax(320px, 436px) minmax(0, 1fr) !important;
+}
+
+html body.our-work-page main > section.service-overview .service-overview-intro {
+  align-items: flex-start !important;
+  text-align: left !important;
+}
+
+html body.our-work-page main > section.service-overview .service-overview-intro h2,
+html body.our-work-page main > section.service-overview .service-overview-intro > p {
+  align-self: flex-start !important;
+  max-width: 100% !important;
+  text-align: left !important;
+}
+
+html body.our-work-page main > section.service-overview .service-overview-intro h2 {
+  font-size: clamp(2rem, 3.8vw, 3.7rem) !important;
+  line-height: 0.95 !important;
+}
+
+@media (max-width: 860px) {
+  html body.our-work-page main > section.service-overview > .container {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* FAQ page final pass: hero, intro width, arrows and image-backed CTA. */
+
+html body.faq-page main > section.hero.short.faq-hero {
+  min-height: clamp(380px, 45svh, 450px) !important;
+  height: clamp(380px, 45svh, 450px) !important;
+  max-height: 450px !important;
+  padding: clamp(54px, 7vh, 78px) max(7vw, calc((100vw - 1180px) / 2)) !important;
+  align-items: center !important;
+  background:
+    linear-gradient(90deg, rgba(8, 8, 8, 0.9) 0%, rgba(20, 20, 20, 0.68) 52%, rgba(8, 8, 8, 0.42) 100%),
+    url("../img/upload-hero-faq-optimized.jpg") center center / cover no-repeat fixed !important;
+}
+
+html body.faq-page main > section.hero.short.faq-hero > .hero-content {
+  width: min(70%, 980px) !important;
+  max-width: 980px !important;
+  padding: 0 !important;
+}
+
+html body.faq-page main > section.hero.short.faq-hero h1 {
+  width: 100% !important;
+  max-width: 100% !important;
+  font-size: clamp(2.75rem, 5vw, 4.65rem) !important;
+  line-height: 0.96 !important;
+  letter-spacing: -0.045em !important;
+}
+
+html body.faq-page main > section.hero.short.faq-hero .hero-copy {
+  margin-top: 18px !important;
+  color: rgba(255, 255, 255, 0.88) !important;
+}
+
+html body.faq-page main > section#answers {
+  padding-top: clamp(58px, 6vw, 88px) !important;
+  padding-bottom: clamp(58px, 6vw, 88px) !important;
+  background: #ffffff !important;
+}
+
+html body.faq-page main > section#answers > .container.narrow.center {
+  width: min(1180px, calc(100% - 40px)) !important;
+  margin-bottom: clamp(34px, 4.2vw, 54px) !important;
+  padding: clamp(34px, 4vw, 54px) !important;
+  border: 1px solid #d8d8d5 !important;
+  border-radius: 18px !important;
+  background: #f3f3f1 !important;
+  box-shadow: rgba(16, 16, 16, 0.06) 0 24px 70px !important;
+  text-align: left !important;
+}
+
+html body.faq-page main > section#answers > .container.narrow.center h2 {
+  max-width: 900px !important;
+  margin: 0 0 16px !important;
+  color: #101010 !important;
+  font-size: clamp(2.15rem, 3.8vw, 3.7rem) !important;
+  line-height: 0.98 !important;
+  text-align: left !important;
+}
+
+html body.faq-page main > section#answers > .container.narrow.center .slashes {
+  margin-left: 0 !important;
+}
+
+html body.faq-page main > section#answers > .container.narrow.center p {
+  max-width: 920px !important;
+  margin: 0 !important;
+  color: #3f4742 !important;
+  text-align: left !important;
+}
+
+html body.faq-page main > section#answers > .container.narrow:not(.center) {
+  width: min(1180px, calc(100% - 40px)) !important;
+  padding: clamp(28px, 3vw, 40px) !important;
+  border: 1px solid #d8d8d5 !important;
+  border-radius: 18px !important;
+  background: #f6f6f4 !important;
+}
+
+html body.faq-page main > section#answers > .container.narrow:not(.center) + .container.narrow:not(.center) {
+  margin-top: clamp(28px, 4vw, 46px) !important;
+}
+
+html body.faq-page main > section#answers > .container.narrow:not(.center) h3 {
+  max-width: 780px !important;
+  margin: 0 0 24px !important;
+  color: #101010 !important;
+  font-size: clamp(1.7rem, 2.8vw, 2.65rem) !important;
+  line-height: 1.04 !important;
+}
+
+html body.faq-page main .faq-question {
+  position: relative !important;
+  min-height: 58px !important;
+  padding: 16px 58px 16px 22px !important;
+  gap: 18px !important;
+  color: #101010 !important;
+  font-size: clamp(0.98rem, 1.12vw, 1.08rem) !important;
+}
+
+html body.faq-page main .faq-question span {
+  position: absolute !important;
+  top: 50% !important;
+  right: 22px !important;
+  width: 18px !important;
+  height: 18px !important;
+  margin: 0 !important;
+  display: block !important;
+  flex: 0 0 18px !important;
+  border: 0 !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  overflow: visible !important;
+  transform: translateY(-50%) !important;
+}
+
+html body.faq-page main .faq-question span::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 3px !important;
+  left: 3px !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-right: 2px solid var(--brand-green) !important;
+  border-bottom: 2px solid var(--brand-green) !important;
+  background: transparent !important;
+  transform: rotate(45deg) !important;
+  transform-origin: center !important;
+}
+
+html body.faq-page main .faq-item.open .faq-question span {
+  transform: translateY(-50%) !important;
+}
+
+html body.faq-page main .faq-item.open .faq-question span::before {
+  transform: rotate(225deg) !important;
+}
+
+@media (max-width: 860px) {
+  html body.faq-page main > section.hero.short.faq-hero > .hero-content {
+    width: 100% !important;
+  }
+}
+
+/* FAQ standalone road-safety CTA. Kept separate from global CTA rules to avoid legacy spacing conflicts. */
+
+html body.faq-page main > .faq-road-cta {
+  width: 100%;
+  margin: 0;
+  padding: clamp(30px, 3.4vw, 44px) 20px;
+  background: #ffffff;
+}
+
+html body.faq-page main > .faq-road-cta .faq-road-cta-inner {
+  width: min(1180px, 100%);
+  min-height: 0;
+  margin: 0 auto;
+  padding: clamp(32px, 3.8vw, 44px) clamp(42px, 5.6vw, 76px);
+  display: grid;
+  grid-template-columns: minmax(300px, 0.86fr) minmax(380px, 1fr);
+  gap: clamp(42px, 6vw, 88px);
+  align-items: center;
+  border-radius: 16px;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(9, 9, 9, 0.9) 0%, rgba(18, 18, 18, 0.72) 56%, rgba(9, 9, 9, 0.88) 100%),
+    url("../img/faq-hero-premium-optimized.jpg") center center / cover no-repeat;
+  box-shadow: rgba(16, 16, 16, 0.12) 0 24px 70px;
+  color: #ffffff;
+}
+
+html body.faq-page main > .faq-road-cta .faq-road-cta-heading,
+html body.faq-page main > .faq-road-cta .faq-road-cta-copy {
+  min-width: 0;
+}
+
+html body.faq-page main > .faq-road-cta .eyebrow {
+  margin: 0 0 18px;
+  color: var(--brand-green);
+  font-size: clamp(0.68rem, 0.82vw, 0.78rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+html body.faq-page main > .faq-road-cta h3 {
+  max-width: 500px;
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(2.2rem, 3.65vw, 4rem);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+html body.faq-page main > .faq-road-cta p {
+  max-width: 590px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: clamp(1rem, 1.15vw, 1.12rem);
+  line-height: 1.58;
+}
+
+html body.faq-page main > .faq-road-cta p + p {
+  margin-top: 14px;
+}
+
+html body.faq-page main > .faq-road-cta a:not(.btn) {
+  color: var(--brand-green);
+  font-weight: 800;
+}
+
+html body.faq-page main > .faq-road-cta .btn {
+  margin-top: 24px;
+}
+
+@media (max-width: 860px) {
+  html body.faq-page main > .faq-road-cta {
+    padding: 28px 18px;
+  }
+
+  html body.faq-page main > .faq-road-cta .faq-road-cta-inner {
+    padding: 30px 22px;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+/* Brand split accent: subtle red/green cap for framed content blocks. */
+
+html body main :where(
+  .content-panel,
+  .side-panel,
+  .contact-grid,
+  .gallery-heading-strip,
+  .faq-road-cta-inner
+),
+html body.home-page main :where(.fleet-panel, .quote-card),
+html body.faq-page main > section#answers > .container.narrow,
+html body.our-work-page main > section.service-overview > .container {
+  position: relative;
+}
+
+html body main :where(
+  .content-panel,
+  .side-panel,
+  .contact-grid,
+  .gallery-heading-strip,
+  .faq-road-cta-inner
+)::before,
+html body.home-page main :where(.fleet-panel, .quote-card)::before,
+html body.faq-page main > section#answers > .container.narrow::before,
+html body.our-work-page main > section.service-overview > .container::before {
+  content: "";
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 6px;
+  display: block;
+  border-radius: inherit;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  background: linear-gradient(90deg, var(--brand-green) 0 50%, var(--brand-red) 50% 100%);
+  pointer-events: none;
+}
+
+html body main .side-panel::before {
+  z-index: 2;
+}
+
+/* Stable service sidebars: sticky panels cannot live on transformed reveal elements. */
+
+html body:is(.repair-page, .replacement-page) main .repair-intro-section,
+html body:is(.repair-page, .replacement-page) main .repair-intro-section > .container.sidebar-layout {
+  overflow: visible !important;
+  align-items: start !important;
+}
+
+html body:is(.repair-page, .replacement-page) main .repair-intro-section > .container.sidebar-layout > .side-panel {
+  position: sticky !important;
+  top: 112px !important;
+  align-self: start !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: calc(100vh - 136px) !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  z-index: 3;
+}
+
+html body:is(.repair-page, .replacement-page) main .repair-intro-section > .container.sidebar-layout > .side-panel.reveal,
+html body:is(.repair-page, .replacement-page) main .repair-intro-section > .container.sidebar-layout > .side-panel.reveal.is-visible {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+@media (max-width: 980px) {
+  html body:is(.repair-page, .replacement-page) main .repair-intro-section > .container.sidebar-layout > .side-panel {
+    position: static !important;
+    top: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+
+/* Brand header: dark chrome with an oversized logo that settles on scroll. */
+
+html {
+  scroll-padding-top: 92px;
+}
+
+html body .site-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  overflow: visible !important;
+  background: rgba(14, 15, 16, 0.96) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: rgba(0, 0, 0, 0.24) 0 12px 34px !important;
+  backdrop-filter: blur(14px);
+  transition: background 180ms ease, box-shadow 180ms ease;
+}
+
+html body .site-header .header-inner {
+  width: min(var(--max), calc(100% - 48px)) !important;
+  min-height: 92px !important;
+  display: grid !important;
+  grid-template-columns: 126px minmax(0, 1fr) auto !important;
+  gap: clamp(22px, 3vw, 42px) !important;
+  align-items: center !important;
+  transition: min-height 220ms ease, grid-template-columns 220ms ease;
+}
+
+html body .site-header .logo {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  width: 126px !important;
+  overflow: visible !important;
+}
+
+html body .site-header .logo img {
+  width: 126px !important;
+  max-width: 126px !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  transform: translateY(18px) !important;
+  transform-origin: center top;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.36));
+  transition: width 220ms ease, max-width 220ms ease, transform 220ms ease;
+}
+
+html body.header-compact .site-header .header-inner {
+  min-height: 74px !important;
+  grid-template-columns: 92px minmax(0, 1fr) auto !important;
+}
+
+html body.header-compact .site-header .logo,
+html body.header-compact .site-header .logo img {
+  width: 92px !important;
+  max-width: 92px !important;
+}
+
+html body.header-compact .site-header .logo img {
+  transform: translateY(0) !important;
+}
+
+html body .site-header .desktop-nav a,
+html body .site-header .phone-top,
+html body .site-header .phone-top span {
+  color: #ffffff !important;
+}
+
+html body .site-header .phone-top span {
+  color: rgba(255, 255, 255, 0.62) !important;
+}
+
+html body .site-header .desktop-nav a.active,
+html body .site-header .desktop-nav a:hover {
+  color: var(--brand-green) !important;
+}
+
+html body .site-header .desktop-nav a::after {
+  background: var(--brand-green) !important;
+}
+
+html body .site-header .quote-button {
+  background: var(--brand-green) !important;
+  color: #ffffff !important;
+}
+
+html body .site-header .menu-toggle {
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+html body .site-header .menu-toggle span {
+  background: #ffffff !important;
+}
+
+@media (max-width: 980px) {
+  html {
+    scroll-padding-top: 76px !important;
+  }
+
+  html body .site-header .header-inner {
+    width: calc(100% - 28px) !important;
+    min-height: 76px !important;
+    grid-template-columns: 86px minmax(0, 1fr) 48px !important;
+    gap: 10px !important;
+  }
+
+  html body .site-header .logo,
+  html body .site-header .logo img,
+  html body.header-compact .site-header .logo,
+  html body.header-compact .site-header .logo img {
+    width: 82px !important;
+    max-width: 82px !important;
+  }
+
+  html body .site-header .logo img,
+  html body.header-compact .site-header .logo img {
+    transform: translateY(0) !important;
+  }
+}
+
+/* Header/hero alignment pass: shared rail, larger logo, wider hero content. */
+
+html body .site-header .header-inner {
+  min-height: 98px !important;
+  grid-template-columns: 156px minmax(0, 1fr) auto !important;
+}
+
+html body .site-header .logo,
+html body .site-header .logo img {
+  width: 156px !important;
+  max-width: 156px !important;
+}
+
+html body .site-header .logo img {
+  transform: translateY(24px) !important;
+}
+
+html body.header-compact .site-header .header-inner {
+  min-height: 76px !important;
+  grid-template-columns: 104px minmax(0, 1fr) auto !important;
+}
+
+html body.header-compact .site-header .logo,
+html body.header-compact .site-header .logo img {
+  width: 104px !important;
+  max-width: 104px !important;
+}
+
+html body.header-compact .site-header .logo img {
+  transform: translateY(0) !important;
+}
+
+html body main > section.hero,
+html body main > section.hero.short,
+html body.repair-page main > section.hero.short.service-hero,
+html body.replacement-page main > section.hero.short.service-hero {
+  padding-right: max(24px, calc((100vw - var(--max)) / 2)) !important;
+  padding-left: max(24px, calc((100vw - var(--max)) / 2)) !important;
+}
+
+html body main > section.hero > .hero-content,
+html body main > section.hero.short > .hero-content,
+html body.repair-page main > section.hero.short.service-hero > .hero-content,
+html body.replacement-page main > section.hero.short.service-hero > .hero-content {
+  box-sizing: border-box !important;
+  width: min(70vw, 1040px) !important;
+  max-width: min(70vw, 1040px) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+}
+
+html body main > section.hero .page-kicker,
+html body main > section.hero h1,
+html body main > section.hero .hero-copy,
+html body main > section.hero .hero-actions {
+  margin-left: 0 !important;
+  text-align: left !important;
+}
+
+html body main > section.hero h1,
+html body main > section.hero.short h1 {
+  width: min(100%, 14ch) !important;
+  max-width: min(100%, 14ch) !important;
+}
+
+html body.faq-page main > section.hero.short h1,
+html body.contact-page main > section.hero.short h1 {
+  width: min(100%, 16ch) !important;
+  max-width: min(100%, 16ch) !important;
+}
+
+html body main > section.hero .hero-copy,
+html body main > section.hero-content > p:not(.page-kicker) {
+  max-width: min(100%, 58ch) !important;
+}
+
+@media (max-width: 980px) {
+  html body .site-header .header-inner {
+    min-height: 76px !important;
+    grid-template-columns: 92px minmax(0, 1fr) 48px !important;
+  }
+
+  html body .site-header .logo,
+  html body .site-header .logo img,
+  html body.header-compact .site-header .logo,
+  html body.header-compact .site-header .logo img {
+    width: 88px !important;
+    max-width: 88px !important;
+  }
+
+  html body .site-header .logo img,
+  html body.header-compact .site-header .logo img {
+    transform: translateY(0) !important;
+  }
+
+  html body main > section.hero,
+  html body main > section.hero.short,
+  html body.repair-page main > section.hero.short.service-hero,
+  html body.replacement-page main > section.hero.short.service-hero {
+    padding-right: 24px !important;
+    padding-left: 24px !important;
+  }
+
+  html body main > section.hero > .hero-content,
+  html body main > section.hero.short > .hero-content,
+  html body.repair-page main > section.hero.short.service-hero > .hero-content,
+  html body.replacement-page main > section.hero.short.service-hero > .hero-content {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
 }

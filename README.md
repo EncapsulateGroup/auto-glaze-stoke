@@ -10,7 +10,7 @@ npm start
 
 Then open `http://localhost:4173/`.
 
-Forms submit to `/api/enquiry`, a Cloudflare Pages Function that validates required fields, checks the honeypot, optionally validates Turnstile when a secret is configured, and sends the enquiry through the Brevo transactional email API.
+Forms submit to `/api/enquiry`, a Cloudflare Pages Function that validates required fields, checks the honeypot, validates Turnstile server-side, and sends the enquiry through the Brevo transactional email API.
 
 ## Current Status
 
@@ -77,7 +77,7 @@ autoglaze-stoke-static
 Build settings:
 
 ```text
-Build command: none
+Build command: npm run build
 Build output directory: public
 Functions directory: functions
 ```
@@ -86,12 +86,16 @@ Required Cloudflare secret:
 
 ```text
 BREVO_API_KEY
+TURNSTILE_SECRET_KEY
 ```
 
-Optional Cloudflare secret, once the Turnstile widget exists:
+Required Cloudflare variables:
 
 ```text
-TURNSTILE_SECRET_KEY
+TURNSTILE_SITE_KEY
+BREVO_FROM_EMAIL=yourwebsite@autoglaze-stoke.co.uk
+ENQUIRY_NOTIFICATION_TO=lee@autoglaze-stoke.co.uk
+ENQUIRY_SITE_NAME="AutoGlaze Stoke"
 ```
 
 Brevo sender email:
@@ -110,9 +114,13 @@ Do not commit Brevo API keys, Turnstile secrets, local `.env` files, `.dev.vars`
 
 ## Form Testing
 
-Without Cloudflare secrets, the function will return a friendly send failure because Brevo cannot be contacted. After `BREVO_API_KEY` is added in Cloudflare, submit a test enquiry and confirm the email arrives at `lee@autoglaze-stoke.co.uk`.
+Without Cloudflare secrets, the function will return a friendly send failure because Brevo and Turnstile cannot be validated. After `BREVO_API_KEY`, `TURNSTILE_SECRET_KEY`, and `TURNSTILE_SITE_KEY` are added in Cloudflare, submit a test enquiry and confirm the email arrives at `lee@autoglaze-stoke.co.uk`.
 
-If `TURNSTILE_SECRET_KEY` is added, the form must also include a valid `cf-turnstile-response` token from the live widget before the function will send.
+The form must include a valid `cf-turnstile-response` token from the live widget before the function will send.
+
+## Policy And Cookie Notes
+
+The site currently embeds Google Maps directly. Before final live sign-off, add client-approved Privacy Policy and Cookie Policy wording, then either add cookie consent for optional embeds or replace embedded maps with direct map links.
 
 ## Go-Live Files
 

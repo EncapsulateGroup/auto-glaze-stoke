@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
+Disallow: /cdn-cgi/
 Disallow: /thank-you/
 Disallow: /api/
+Disallow: /404.html
 
 Sitemap: https://autoglaze-stoke.co.uk/sitemap.xml

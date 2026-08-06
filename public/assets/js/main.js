@@ -22,6 +22,9 @@ const contactDetails = {
   phoneHref: "tel:+441782281884",
 };
 
+const mapEmbedUrl = "https://maps.google.com/maps?q=60%20Nile%20St%2C%20Stoke-on-Trent%20ST6%202BH&amp;t=m&amp;z=15&amp;output=embed&amp;iwloc=near";
+const cookieStorageKey = "autoglaze-cookie-choice";
+
 const socialLinks = [
   {
     label: "Facebook",
@@ -88,6 +91,7 @@ function socialMarkup() {
 }
 
 function footerMarkup() {
+  const cookieHref = `${basePath}cookie-policy/`;
   return `
     <footer class="site-footer">
       <div class="footer-main">
@@ -100,6 +104,7 @@ function footerMarkup() {
           <div class="slashes"></div>
           <ul class="footer-links">
             ${navigationLinks()}
+            <li><a href="${cookieHref}">Cookie Policy</a></li>
           </ul>
         </nav>
         <div class="footer-contact">
@@ -113,17 +118,37 @@ function footerMarkup() {
             ${socialMarkup()}
           </div>
           <a class="btn btn-green btn-small" href="${basePath}contact-us/">Get in touch</a>
+          <button class="footer-cookie-settings" type="button" data-cookie-open>Cookie Settings</button>
         </div>
       </div>
-      <div class="copyright">© ${new Date().getFullYear()} AutoGlaze Stoke. All rights reserved. Built and hosted by <a href="https://encapsulategroup.co.uk/">Encapsulate Marketing.</a></div>
+      <div class="copyright">© 2021 all rights reserved. Built and hosted by <a href="https://encapsulategroup.co.uk/">Encapsulate Group Ltd.</a></div>
     </footer>`;
+}
+
+function mapEmbedMarkup(extraClass = "") {
+  return `
+    <div class="map-card ${extraClass}" data-cookie-embed>
+      <iframe class="map" title="${contactDetails.address}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" data-cookie-src="${mapEmbedUrl}"></iframe>
+      <div class="cookie-embed-placeholder">
+        <strong>Google Maps is blocked until optional cookies are accepted.</strong>
+        <p>You can accept optional cookies to view the embedded map, or open the location directly in Google Maps.</p>
+        <div class="cookie-embed-actions">
+          <button class="btn btn-green btn-small" type="button" data-cookie-open>Cookie Settings</button>
+          <a class="btn btn-ghost btn-small" href="https://www.google.com/maps/search/?api=1&amp;query=60%20Nile%20St%2C%20Stoke-on-Trent%20ST6%202BH" target="_blank" rel="noopener">Open Map</a>
+        </div>
+      </div>
+    </div>`;
 }
 
 function contactFormMarkup() {
   return `
-    <form action="${basePath}api/enquiry" method="post">
+    <form action="${basePath}api/enquiry" method="post" data-enquiry-form>
       <div class="form-grid">
+        <input type="hidden" name="form_type" value="enquiry">
         <input type="hidden" name="source" value="${window.location.pathname}">
+        <input type="hidden" name="page_title" data-enquiry-meta="page_title">
+        <input type="hidden" name="page_path" data-enquiry-meta="page_path">
+        <input type="hidden" name="page_url" data-enquiry-meta="page_url">
         <div class="field honeypot"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
         <div class="field"><label>Name<input name="name" placeholder="Name" autocomplete="name" maxlength="100" required></label></div>
         <div class="field"><label>Company<input name="company" placeholder="Company" autocomplete="organization" maxlength="120"></label></div>
@@ -131,6 +156,7 @@ function contactFormMarkup() {
         <div class="field"><label>Email<input type="email" name="email" placeholder="Email" autocomplete="email" maxlength="254" required></label></div>
         <div class="field full"><label>Message<textarea name="message" placeholder="Message" maxlength="3000" required></textarea></label></div>
       </div>
+      <div class="form-turnstile" data-turnstile-widget></div>
       <div class="form-status" aria-live="polite"></div>
       <button class="btn btn-green submit" type="submit">Submit</button>
     </form>`;
@@ -141,7 +167,7 @@ function contactBandMarkup() {
     return `
       <section class="contact-band contact-map-band">
         <div class="contact-map-frame">
-          <iframe class="map" title="${contactDetails.address}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=60%20Nile%20St%2C%20Stoke-on-Trent%20ST6%202BH&amp;t=m&amp;z=15&amp;output=embed&amp;iwloc=near"></iframe>
+          ${mapEmbedMarkup("contact-map-card")}
         </div>
       </section>`;
   }
@@ -149,7 +175,7 @@ function contactBandMarkup() {
   return `
     <section class="contact-band">
       <div class="contact-grid">
-        <iframe class="map" title="${contactDetails.address}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=60%20Nile%20St%2C%20Stoke-on-Trent%20ST6%202BH&amp;t=m&amp;z=15&amp;output=embed&amp;iwloc=near"></iframe>
+        ${mapEmbedMarkup("contact-grid-map")}
         <div class="contact-info">
           <h2>Contact Us</h2>
           <div class="slashes"></div>
@@ -189,6 +215,90 @@ function renderGlobalElements() {
 }
 
 renderGlobalElements();
+
+let cookieChoiceMemory = null;
+
+function getCookieChoice() {
+  try {
+    return window.localStorage.getItem(cookieStorageKey) || cookieChoiceMemory;
+  } catch {
+    return cookieChoiceMemory;
+  }
+}
+
+function setCookieChoice(choice) {
+  cookieChoiceMemory = choice;
+  try {
+    window.localStorage.setItem(cookieStorageKey, choice);
+  } catch {
+    cookieChoiceMemory = choice;
+  }
+}
+
+function applyCookieChoice(choice) {
+  const allowOptional = choice === "accepted";
+  document.body.classList.toggle("optional-cookies-accepted", allowOptional);
+  document.querySelectorAll("[data-cookie-embed]").forEach((embed) => {
+    const iframe = embed.querySelector("iframe[data-cookie-src]");
+    const placeholder = embed.querySelector(".cookie-embed-placeholder");
+    if (allowOptional && iframe && !iframe.src) {
+      iframe.src = iframe.dataset.cookieSrc;
+    }
+    if (placeholder) placeholder.hidden = allowOptional;
+  });
+  document.querySelector(".cookie-banner")?.classList.toggle("is-hidden", Boolean(choice));
+  document.querySelector(".cookie-floating-settings")?.classList.toggle("is-visible", Boolean(choice));
+}
+
+function renderCookieControls() {
+  if (document.querySelector(".cookie-banner")) return;
+
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `<section class="cookie-banner" aria-label="Cookie notice">
+      <div class="cookie-banner-copy">
+        <strong>Cookies on this website</strong>
+        <p>We use essential cookies to make this website work. With your permission, we also use optional cookies to show embedded Google Maps.</p>
+      </div>
+      <div class="cookie-banner-actions">
+        <button class="btn btn-green btn-small" type="button" data-cookie-accept>Accept Optional Cookies</button>
+        <button class="btn btn-ghost btn-small" type="button" data-cookie-reject>Reject Optional Cookies</button>
+        <a href="${basePath}cookie-policy/">Cookie Policy</a>
+      </div>
+    </section>
+    <button class="cookie-floating-settings" type="button" data-cookie-open>Cookie Settings</button>`
+  );
+
+  applyCookieChoice(getCookieChoice());
+}
+
+renderCookieControls();
+
+document.addEventListener("click", (event) => {
+  const accept = event.target.closest("[data-cookie-accept]");
+  const reject = event.target.closest("[data-cookie-reject]");
+  const open = event.target.closest("[data-cookie-open]");
+
+  if (accept) {
+    event.preventDefault();
+    setCookieChoice("accepted");
+    applyCookieChoice("accepted");
+  } else if (reject) {
+    event.preventDefault();
+    setCookieChoice("rejected");
+    applyCookieChoice("rejected");
+  } else if (open) {
+    event.preventDefault();
+    document.querySelector(".cookie-banner")?.classList.remove("is-hidden");
+  }
+});
+
+function updateHeaderState() {
+  document.body.classList.toggle("header-compact", window.scrollY > 28);
+}
+
+updateHeaderState();
+window.addEventListener("scroll", updateHeaderState, { passive: true });
 
 if (currentSlug() === "contact-us") {
   document.querySelectorAll(".contact-main .side-panel").forEach((panel) => {
@@ -231,10 +341,105 @@ if (currentSlug() === "faq") {
 }
 
 if (currentSlug() === "contact-us") {
-  document.title = "Contact Us For Reliable Windscreen Repairs • AutoGlaze";
   const contactHeading = document.querySelector(".contact-main h2");
   if (contactHeading) contactHeading.textContent = "Windscreen problems? Get in touch today";
 }
+
+const enquiryForms = [...document.querySelectorAll("[data-enquiry-form]")];
+
+async function loadTurnstile(siteKey) {
+  if (!siteKey || window.turnstile) return;
+  await new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+    script.async = true;
+    script.defer = true;
+    script.addEventListener("load", resolve, { once: true });
+    script.addEventListener("error", reject, { once: true });
+    document.head.appendChild(script);
+  });
+}
+
+function populateFormMeta(form) {
+  const meta = {
+    page_title: document.title,
+    page_path: window.location.pathname,
+    page_url: window.location.href,
+  };
+
+  Object.entries(meta).forEach(([name, value]) => {
+    const field = form.querySelector(`[data-enquiry-meta="${name}"]`);
+    if (field) field.value = value;
+  });
+}
+
+async function setupForms() {
+  if (!enquiryForms.length) return;
+
+  let turnstileSiteKey = "";
+  try {
+    const response = await fetch(`${basePath}api/form-config`, { headers: { Accept: "application/json" } });
+    if (response.ok) {
+      const config = await response.json();
+      turnstileSiteKey = config.turnstileSiteKey || "";
+    }
+  } catch {
+    turnstileSiteKey = "";
+  }
+
+  if (turnstileSiteKey) {
+    try {
+      await loadTurnstile(turnstileSiteKey);
+      enquiryForms.forEach((form) => {
+        const widget = form.querySelector("[data-turnstile-widget]");
+        if (widget && window.turnstile) {
+          window.turnstile.render(widget, { sitekey: turnstileSiteKey });
+        }
+      });
+    } catch {
+      turnstileSiteKey = "";
+    }
+  }
+
+  enquiryForms.forEach((form) => {
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      populateFormMeta(form);
+
+      const status = form.querySelector(".form-status");
+      const submit = form.querySelector("[type='submit']");
+      if (status) {
+        status.hidden = false;
+        status.textContent = "Sending your message...";
+      }
+      if (submit) submit.disabled = true;
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        });
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok || !result.ok) {
+          throw new Error(result.message || "Sorry, your message could not be sent. Please call 01782 281884.");
+        }
+
+        window.location.href = result.redirect || `${basePath}thank-you/`;
+      } catch (error) {
+        if (status) status.textContent = error.message;
+        if (window.turnstile) {
+          const widget = form.querySelector("[data-turnstile-widget]");
+          if (widget) window.turnstile.reset(widget);
+        }
+        if (submit) submit.disabled = false;
+      }
+    });
+  });
+}
+
+setupForms();
 
 document.querySelector(".work-gallery")?.setAttribute("id", "projects");
 document.querySelector(".faq-list")?.closest(".section")?.setAttribute("id", "answers");
@@ -446,57 +651,6 @@ document.querySelectorAll("[data-review-carousel]").forEach((carousel) => {
 });
 
 const workGalleries = [...document.querySelectorAll(".work-gallery .gallery")];
-
-// Move the complete four-benefit box vertically while preserving its original styling and dimensions.
-const followedBenefitLists = [...document.querySelectorAll(
-  ".repair-page .repair-intro-section .side-panel, .replacement-page .repair-intro-section .side-panel, .contact-page .contact-main .side-list"
-)];
-let benefitListMetrics = [];
-
-function measureBenefitLists() {
-  followedBenefitLists.forEach((list) => {
-    list.style.transform = "";
-    list.style.transition = "";
-  });
-  benefitListMetrics = followedBenefitLists.map((list) => {
-    const section = list.closest(".repair-intro-section, .contact-main");
-    const boundary = section.querySelector(".content-panel") || section;
-    const listRect = list.getBoundingClientRect();
-    const boundaryRect = boundary.getBoundingClientRect();
-    return {
-      list,
-      start: window.scrollY + listRect.top,
-      maximum: Math.max(0, window.scrollY + boundaryRect.bottom - (window.scrollY + listRect.top) - listRect.height),
-    };
-  });
-}
-
-function followBenefitLists() {
-  benefitListMetrics.forEach(({ list, start, maximum }) => {
-    if (window.innerWidth < 700) {
-      list.style.transform = "";
-      list.style.transition = "";
-      return;
-    }
-    const distance = Math.min(maximum, Math.max(0, window.scrollY + 96 - start));
-    list.style.transition = "none";
-    list.style.transform = `translateY(${distance}px)`;
-  });
-}
-
-if (followedBenefitLists.length) {
-  measureBenefitLists();
-  followBenefitLists();
-  window.addEventListener("scroll", followBenefitLists, { passive: true });
-  window.addEventListener("resize", () => {
-    measureBenefitLists();
-    followBenefitLists();
-  });
-  window.addEventListener("load", () => {
-    measureBenefitLists();
-    followBenefitLists();
-  }, { once: true });
-}
 
 if (workGalleries.length) {
   const galleryImages = workGalleries.flatMap((gallery) => [...gallery.querySelectorAll("img")]);
