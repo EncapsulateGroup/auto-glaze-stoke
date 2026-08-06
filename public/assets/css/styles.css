@@ -4246,6 +4246,13 @@ html body.repair-page main > section.section.dark:has(.chip-copy) .chip-guide im
 /* Replacement page service restore: match dark sidebar and image-backed CTA. */
 
 html body.replacement-page main .repair-intro-section .side-panel {
+  position: sticky !important;
+  top: 112px !important;
+  align-self: start !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: calc(100vh - 136px) !important;
+  transform: none !important;
   background: linear-gradient(145deg, #171717 0%, #2d2d2d 100%) !important;
   border: 1px solid rgba(255, 255, 255, 0.14) !important;
   color: #ffffff !important;
@@ -4279,6 +4286,15 @@ html body.replacement-page main .repair-intro-section .side-panel .side-list li:
   color: var(--brand-green) !important;
   font-weight: 900 !important;
   transform: translateY(-50%) !important;
+}
+
+html body.page-transition-enabled.page-ready main {
+  transform: none !important;
+}
+
+html body {
+  overflow-x: clip !important;
+  overflow-y: visible !important;
 }
 
 html body.replacement-page main > section.cta-band.text-cta {
