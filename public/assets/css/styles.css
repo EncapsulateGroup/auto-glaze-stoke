@@ -5239,3 +5239,35 @@ html body main > section.hero-content > p:not(.page-kicker) {
     max-width: 100% !important;
   }
 }
+
+/* Contact page details panel */
+
+html body.contact-page main .contact-main .side-panel {
+  background: linear-gradient(145deg, #171717 0%, #2b2b2b 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: #ffffff !important;
+  box-shadow: rgba(16, 16, 16, 0.18) 0 24px 70px !important;
+}
+
+html body.contact-page main .contact-main .side-panel :where(h4, li, span) {
+  color: rgba(255, 255, 255, 0.86) !important;
+}
+
+html body.contact-page main .contact-main .contact-sidebar-details h4,
+html body.contact-page main .contact-main .side-panel > div > h4 {
+  color: #ffffff !important;
+}
+
+html body.contact-page main .contact-main .contact-sidebar-details li {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+html body.contact-page main .contact-main .contact-sidebar-details a,
+html body.contact-page main .contact-main .hours li span:first-child,
+html body.contact-page main .contact-main .hours li:last-child span:first-child {
+  color: var(--brand-green) !important;
+}
+
+html body.contact-page main .contact-main .hours li {
+  border-bottom-color: rgba(255, 255, 255, 0.12) !important;
+}
