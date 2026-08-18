@@ -16,6 +16,7 @@ document.querySelectorAll("form").forEach((form) => {
       status.textContent = "Sending...";
       status.classList.remove("is-error");
     }
+    form.setAttribute("aria-busy", "true");
     if (submit) submit.disabled = true;
 
     try {
@@ -36,6 +37,8 @@ document.querySelectorAll("form").forEach((form) => {
         status.classList.add("is-error");
       }
       if (submit) submit.disabled = false;
+    } finally {
+      form.removeAttribute("aria-busy");
     }
   });
 });

@@ -1,5 +1,10 @@
 const scriptSource = document.currentScript?.getAttribute("src") || "assets/js/main.js";
 const basePath = scriptSource.includes("../") ? "../" : "";
+document.body.classList.add("page-transition-enabled");
+document.body.insertAdjacentHTML(
+  "afterbegin",
+  '<div class="page-transition-curtain" aria-hidden="true"></div>'
+);
 
 // These shared definitions render the repeated site chrome on every static page.
 const pages = [
@@ -16,6 +21,9 @@ const contactDetails = {
   phone: "01782 281884",
   phoneHref: "tel:+441782281884",
 };
+
+const mapEmbedUrl = "https://maps.google.com/maps?q=60%20Nile%20St%2C%20Stoke-on-Trent%20ST6%202BH&amp;t=m&amp;z=15&amp;output=embed&amp;iwloc=near";
+const cookieStorageKey = "autoglaze-cookie-choice";
 
 const socialLinks = [
   {
@@ -50,17 +58,18 @@ function headerMarkup() {
     <header class="site-header">
       <div class="header-inner">
         <a class="logo" href="${basePath || "./"}"><img src="${basePath}assets/img/logo.png" alt="AutoGlaze"></a>
+        <nav class="desktop-nav" aria-label="Primary navigation">
+          <ul>${navigationLinks()}</ul>
+        </nav>
         <div class="header-actions">
-          <a class="phone-top" href="${contactDetails.phoneHref}">Call now ${contactDetails.phone}</a>
-          <div class="button-row">
-            <button class="btn btn-green" data-menu-open>Menu</button>
-            <a class="btn btn-red" href="${basePath}contact-us/">Contact Us</a>
-          </div>
+          <a class="phone-top" href="${contactDetails.phoneHref}"><span>Call our local team</span>${contactDetails.phone}</a>
+          <a class="btn btn-green quote-button" href="${basePath}contact-us/">Get a quote</a>
+          <button class="menu-toggle" data-menu-open aria-label="Open menu" aria-expanded="false" aria-controls="site-menu"><span></span><span></span><span></span></button>
         </div>
       </div>
     </header>
-    <aside class="menu-overlay" aria-label="Site menu">
-      <div class="menu-panel">
+    <aside class="menu-overlay" aria-label="Site menu" aria-hidden="true">
+      <div class="menu-panel" id="site-menu">
         <button class="menu-close" data-menu-close aria-label="Close menu">×</button>
         <img class="menu-logo" src="${basePath}assets/img/logo.png" alt="AutoGlaze">
         <ul class="menu-links">
@@ -82,50 +91,91 @@ function socialMarkup() {
 }
 
 function footerMarkup() {
+  const cookieHref = `${basePath}cookie-policy/`;
   return `
     <footer class="site-footer">
       <div class="footer-main">
-        <div>
+        <div class="footer-brand">
           <img class="footer-logo" src="${basePath}assets/img/logo.png" alt="AutoGlaze">
-          <p>– Fully experienced<br>– Reliable and competent<br>– Quality Guarantee<br>– We aim for customer satisfaction throughout every aspect of our work</p>
-          <div class="socials">
-            ${socialMarkup()}
-          </div>
+          <p>Fully experienced, reliable and competent vehicle-glass specialists. We aim for customer satisfaction throughout every aspect of our work.</p>
         </div>
-        <div>
+        <nav class="footer-nav" aria-label="Footer navigation">
           <h4>Page Links</h4>
           <div class="slashes"></div>
           <ul class="footer-links">
             ${navigationLinks()}
+            <li><a href="${cookieHref}">Cookie Policy</a></li>
           </ul>
+        </nav>
+        <div class="footer-contact">
+          <h4>Contact</h4>
+          <div class="slashes"></div>
+          <ul class="footer-contact-list">
+            <li>${contactDetails.address}</li>
+            <li><a href="${contactDetails.phoneHref}">${contactDetails.phone}</a></li>
+          </ul>
+          <div class="socials">
+            ${socialMarkup()}
+          </div>
+          <a class="btn btn-green btn-small" href="${basePath}contact-us/">Get in touch</a>
+          <button class="footer-cookie-settings" type="button" data-cookie-open>Cookie Settings</button>
         </div>
       </div>
-      <div class="copyright">© 2021 all rights reserved. Built and hosted by <a href="https://encapsulategroup.co.uk/">Encapsulate Marketing.</a></div>
+      <div class="copyright">© 2021 all rights reserved. Built and hosted by <a href="https://encapsulategroup.co.uk/">Encapsulate Group Ltd.</a></div>
     </footer>`;
+}
+
+function mapEmbedMarkup(extraClass = "") {
+  return `
+    <div class="map-card ${extraClass}" data-cookie-embed>
+      <iframe class="map" title="${contactDetails.address}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" data-cookie-src="${mapEmbedUrl}"></iframe>
+      <div class="cookie-embed-placeholder">
+        <strong>Google Maps is blocked until optional cookies are accepted.</strong>
+        <p>You can accept optional cookies to view the embedded map, or open the location directly in Google Maps.</p>
+        <div class="cookie-embed-actions">
+          <button class="btn btn-green btn-small" type="button" data-cookie-open>Cookie Settings</button>
+          <a class="btn btn-ghost btn-small" href="https://www.google.com/maps/search/?api=1&amp;query=60%20Nile%20St%2C%20Stoke-on-Trent%20ST6%202BH" target="_blank" rel="noopener">Open Map</a>
+        </div>
+      </div>
+    </div>`;
 }
 
 function contactFormMarkup() {
   return `
-    <form action="${basePath}api/enquiry" method="post">
+    <form action="${basePath}api/enquiry" method="post" data-enquiry-form>
       <div class="form-grid">
+        <input type="hidden" name="form_type" value="enquiry">
         <input type="hidden" name="source" value="${window.location.pathname}">
+        <input type="hidden" name="page_title" data-enquiry-meta="page_title">
+        <input type="hidden" name="page_path" data-enquiry-meta="page_path">
+        <input type="hidden" name="page_url" data-enquiry-meta="page_url">
         <div class="field honeypot"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
-        <div class="field"><label>Name<input name="name" placeholder="Name" required></label></div>
-        <div class="field"><label>Company<input name="company" placeholder="Company"></label></div>
-        <div class="field"><label>Phone Number<input name="phone" placeholder="Phone Number" required></label></div>
-        <div class="field"><label>Email<input type="email" name="email" placeholder="Email" required></label></div>
-        <div class="field full"><label>Message<textarea name="message" placeholder="Message" required></textarea></label></div>
+        <div class="field"><label>Name<input name="name" placeholder="Name" autocomplete="name" maxlength="100" required></label></div>
+        <div class="field"><label>Company<input name="company" placeholder="Company" autocomplete="organization" maxlength="120"></label></div>
+        <div class="field"><label>Phone Number<input type="tel" name="phone" placeholder="Phone Number" autocomplete="tel" maxlength="30" required></label></div>
+        <div class="field"><label>Email<input type="email" name="email" placeholder="Email" autocomplete="email" maxlength="254" required></label></div>
+        <div class="field full"><label>Message<textarea name="message" placeholder="Message" maxlength="3000" required></textarea></label></div>
       </div>
+      <div class="form-turnstile" data-turnstile-widget></div>
       <div class="form-status" aria-live="polite"></div>
       <button class="btn btn-green submit" type="submit">Submit</button>
     </form>`;
 }
 
 function contactBandMarkup() {
+  if (currentSlug() === "contact-us") {
+    return `
+      <section class="contact-band contact-map-band">
+        <div class="contact-map-frame">
+          ${mapEmbedMarkup("contact-map-card")}
+        </div>
+      </section>`;
+  }
+
   return `
     <section class="contact-band">
       <div class="contact-grid">
-        <iframe class="map" title="${contactDetails.address}" src="https://maps.google.com/maps?q=60%20Nile%20St%2C%20Stoke-on-Trent%20ST6%202BH&amp;t=m&amp;z=15&amp;output=embed&amp;iwloc=near"></iframe>
+        ${mapEmbedMarkup("contact-grid-map")}
         <div class="contact-info">
           <h2>Contact Us</h2>
           <div class="slashes"></div>
@@ -166,12 +216,262 @@ function renderGlobalElements() {
 
 renderGlobalElements();
 
+let cookieChoiceMemory = null;
+
+function getCookieChoice() {
+  try {
+    return window.localStorage.getItem(cookieStorageKey) || cookieChoiceMemory;
+  } catch {
+    return cookieChoiceMemory;
+  }
+}
+
+function setCookieChoice(choice) {
+  cookieChoiceMemory = choice;
+  try {
+    window.localStorage.setItem(cookieStorageKey, choice);
+  } catch {
+    cookieChoiceMemory = choice;
+  }
+}
+
+function applyCookieChoice(choice) {
+  const allowOptional = choice === "accepted";
+  document.body.classList.toggle("optional-cookies-accepted", allowOptional);
+  document.querySelectorAll("[data-cookie-embed]").forEach((embed) => {
+    const iframe = embed.querySelector("iframe[data-cookie-src]");
+    const placeholder = embed.querySelector(".cookie-embed-placeholder");
+    if (allowOptional && iframe && !iframe.src) {
+      iframe.src = iframe.dataset.cookieSrc;
+    }
+    if (placeholder) placeholder.hidden = allowOptional;
+  });
+  document.querySelector(".cookie-banner")?.classList.toggle("is-hidden", Boolean(choice));
+  document.querySelector(".cookie-floating-settings")?.classList.toggle("is-visible", Boolean(choice));
+}
+
+function renderCookieControls() {
+  if (document.querySelector(".cookie-banner")) return;
+
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `<section class="cookie-banner" aria-label="Cookie notice">
+      <div class="cookie-banner-copy">
+        <strong>Cookies on this website</strong>
+        <p>We use essential cookies to make this website work. With your permission, we also use optional cookies to show embedded Google Maps.</p>
+      </div>
+      <div class="cookie-banner-actions">
+        <button class="btn btn-green btn-small" type="button" data-cookie-accept>Accept Optional Cookies</button>
+        <button class="btn btn-ghost btn-small" type="button" data-cookie-reject>Reject Optional Cookies</button>
+        <a href="${basePath}cookie-policy/">Cookie Policy</a>
+      </div>
+    </section>
+    <button class="cookie-floating-settings" type="button" data-cookie-open>Cookie Settings</button>`
+  );
+
+  applyCookieChoice(getCookieChoice());
+}
+
+renderCookieControls();
+
+document.addEventListener("click", (event) => {
+  const accept = event.target.closest("[data-cookie-accept]");
+  const reject = event.target.closest("[data-cookie-reject]");
+  const open = event.target.closest("[data-cookie-open]");
+
+  if (accept) {
+    event.preventDefault();
+    setCookieChoice("accepted");
+    applyCookieChoice("accepted");
+  } else if (reject) {
+    event.preventDefault();
+    setCookieChoice("rejected");
+    applyCookieChoice("rejected");
+  } else if (open) {
+    event.preventDefault();
+    document.querySelector(".cookie-banner")?.classList.remove("is-hidden");
+  }
+});
+
+function updateHeaderState() {
+  document.body.classList.toggle("header-compact", window.scrollY > 28);
+}
+
+updateHeaderState();
+window.addEventListener("scroll", updateHeaderState, { passive: true });
+
+if (currentSlug() === "contact-us") {
+  document.querySelectorAll(".contact-main .side-panel").forEach((panel) => {
+    panel.querySelector(".side-list")?.remove();
+    if (!panel.querySelector(".contact-sidebar-details")) {
+      panel.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="contact-sidebar-details">
+          <h4>Contact Details</h4>
+          <ul class="contact-list">
+            <li>${contactDetails.address}</li>
+            <li><a href="${contactDetails.phoneHref}">${contactDetails.phone}</a></li>
+          </ul>
+        </div>`
+      );
+    }
+  });
+}
+
+document.querySelectorAll(".repair-intro-section .side-panel").forEach((panel) => {
+  if (currentSlug() === "contact-us" || panel.querySelector(".side-panel-cta")) return;
+
+  panel.insertAdjacentHTML(
+    "beforeend",
+    `<a class="btn btn-green side-panel-cta" href="${basePath}contact-us/">Contact Us</a>`
+  );
+});
+
+document.querySelectorAll("main img:not(.hero-background), iframe").forEach((element) => {
+  element.setAttribute("loading", "lazy");
+});
+document.querySelectorAll("img").forEach((image) => {
+  image.setAttribute("decoding", "async");
+});
+
+// Normalise visible legacy copy so headings and page titles follow one editorial standard.
+if (currentSlug() === "faq") {
+  const faqHeading = document.querySelector("main h2");
+  if (faqHeading) faqHeading.textContent = "Answers From Your Local Vehicle-Glass Specialists";
+}
+
+if (currentSlug() === "contact-us") {
+  const contactHeading = document.querySelector(".contact-main h2");
+  if (contactHeading) contactHeading.textContent = "Windscreen problems? Get in touch today";
+}
+
+const enquiryForms = [...document.querySelectorAll("[data-enquiry-form]")];
+
+async function loadTurnstile(siteKey) {
+  if (!siteKey || window.turnstile) return;
+  await new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+    script.async = true;
+    script.defer = true;
+    script.addEventListener("load", resolve, { once: true });
+    script.addEventListener("error", reject, { once: true });
+    document.head.appendChild(script);
+  });
+}
+
+function populateFormMeta(form) {
+  const meta = {
+    page_title: document.title,
+    page_path: window.location.pathname,
+    page_url: window.location.href,
+  };
+
+  Object.entries(meta).forEach(([name, value]) => {
+    const field = form.querySelector(`[data-enquiry-meta="${name}"]`);
+    if (field) field.value = value;
+  });
+}
+
+async function setupForms() {
+  if (!enquiryForms.length) return;
+
+  let turnstileSiteKey = "";
+  try {
+    const response = await fetch(`${basePath}api/form-config`, { headers: { Accept: "application/json" } });
+    if (response.ok) {
+      const config = await response.json();
+      turnstileSiteKey = config.turnstileSiteKey || "";
+    }
+  } catch {
+    turnstileSiteKey = "";
+  }
+
+  if (turnstileSiteKey) {
+    try {
+      await loadTurnstile(turnstileSiteKey);
+      enquiryForms.forEach((form) => {
+        const widget = form.querySelector("[data-turnstile-widget]");
+        if (widget && window.turnstile) {
+          window.turnstile.render(widget, { sitekey: turnstileSiteKey });
+        }
+      });
+    } catch {
+      turnstileSiteKey = "";
+    }
+  }
+
+  enquiryForms.forEach((form) => {
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      populateFormMeta(form);
+
+      const status = form.querySelector(".form-status");
+      const submit = form.querySelector("[type='submit']");
+      if (status) {
+        status.hidden = false;
+        status.textContent = "Sending your message...";
+      }
+      if (submit) submit.disabled = true;
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        });
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok || !result.ok) {
+          throw new Error(result.message || "Sorry, your message could not be sent. Please call 01782 281884.");
+        }
+
+        window.location.href = result.redirect || `${basePath}thank-you/`;
+      } catch (error) {
+        if (status) status.textContent = error.message;
+        if (window.turnstile) {
+          const widget = form.querySelector("[data-turnstile-widget]");
+          if (widget) window.turnstile.reset(widget);
+        }
+        if (submit) submit.disabled = false;
+      }
+    });
+  });
+}
+
+setupForms();
+
+document.querySelector(".work-gallery")?.setAttribute("id", "projects");
+document.querySelector(".faq-list")?.closest(".section")?.setAttribute("id", "answers");
+
+document.querySelectorAll("main .hero").forEach((hero) => {
+  hero.querySelector(".hero-glass-arc")?.remove();
+  hero.querySelector(".hero-watermark")?.remove();
+});
+
+const shortHero = document.querySelector(".hero.short");
+if (shortHero && !shortHero.querySelector(".page-kicker")) {
+  const title = shortHero.querySelector("h1");
+  title?.insertAdjacentHTML("beforebegin", '<span class="page-kicker">AutoGlaze Stoke <i></i> Vehicle glass specialists</span>');
+}
+
 const menuButton = document.querySelector("[data-menu-open]");
 const closeButton = document.querySelector("[data-menu-close]");
 const backdrop = document.querySelector("[data-menu-backdrop]");
+const menuOverlay = document.querySelector(".menu-overlay");
+
+if (menuOverlay) menuOverlay.inert = true;
 
 function setMenu(open) {
   document.body.classList.toggle("menu-open", open);
+  menuButton?.setAttribute("aria-expanded", String(open));
+  menuOverlay?.setAttribute("aria-hidden", String(!open));
+  if (menuOverlay) menuOverlay.inert = !open;
+  if (open) {
+    closeButton?.focus();
+  } else if (document.activeElement === closeButton || document.activeElement?.closest(".menu-overlay")) {
+    menuButton?.focus();
+  }
 }
 
 menuButton?.addEventListener("click", () => setMenu(true));
@@ -180,12 +480,117 @@ backdrop?.addEventListener("click", () => setMenu(false));
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") setMenu(false);
+  if (event.key !== "Tab" || !document.body.classList.contains("menu-open") || !menuOverlay) return;
+
+  const focusable = [...menuOverlay.querySelectorAll("a[href], button:not([disabled])")];
+  const first = focusable[0];
+  const last = focusable.at(-1);
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last?.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first?.focus();
+  }
 });
 
-document.querySelectorAll(".faq-question").forEach((button) => {
+document.querySelectorAll(".faq-question").forEach((button, index) => {
+  const answer = button.closest(".faq-item")?.querySelector(".faq-answer");
+  const answerId = `faq-answer-${index + 1}`;
+  if (answer) answer.id = answerId;
+  button.setAttribute("aria-controls", answerId);
+  button.setAttribute("aria-expanded", "false");
   button.addEventListener("click", () => {
-    button.closest(".faq-item")?.classList.toggle("open");
+    const item = button.closest(".faq-item");
+    const isOpen = item?.classList.toggle("open") || false;
+    button.setAttribute("aria-expanded", String(isOpen));
   });
+});
+
+const revealTargets = document.querySelectorAll(
+  ".section > *, .split > *, .intro-row > *, .sidebar-layout > *, .content-panel > h2, .content-panel > p, .content-panel > .feature-img, .side-list li, .hours li, .trust-strip span, .service-card, .icon-box, .gallery img, .faq-item, .cta-band > *, .contact-grid, .footer-main"
+);
+
+revealTargets.forEach((element, index) => {
+  element.classList.add("reveal");
+  element.style.setProperty("--reveal-delay", `${(index % 4) * 65}ms`);
+});
+
+if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.08, rootMargin: "0px 0px -6% 0px" }
+  );
+  revealTargets.forEach((element) => revealObserver.observe(element));
+} else {
+  revealTargets.forEach((element) => element.classList.add("is-visible"));
+}
+
+// Safety fallback: preserve the scroll animation without ever leaving content hidden.
+window.setTimeout(() => {
+  revealTargets.forEach((element) => element.classList.add("is-visible"));
+}, 4000);
+
+const balancedMediaPairs = [
+  {
+    media: ".home-page #about .photo-pair",
+    content: ".home-page #about .dark-card",
+  },
+  {
+    media: ".home-page .why-section .why-media",
+    content: ".home-page .why-section .why-content",
+  },
+]
+  .map(({ media, content }) => ({
+    media: document.querySelector(media),
+    image: document.querySelector(`${media} img`),
+    content: document.querySelector(content),
+  }))
+  .filter(({ media, image, content }) => media && image && content);
+
+function sizeBalancedMedia() {
+  balancedMediaPairs.forEach(({ media, image, content }) => {
+    media.style.removeProperty("height");
+    image.style.removeProperty("height");
+
+    if (window.innerWidth < 900) {
+      image.style.objectFit = "";
+      return;
+    }
+
+    const targetHeight = Math.round(content.getBoundingClientRect().height + 15);
+    media.style.setProperty("height", `${targetHeight}px`);
+    image.style.setProperty("height", `${targetHeight}px`);
+    image.style.setProperty("object-fit", "cover");
+  });
+}
+
+if (balancedMediaPairs.length) {
+  sizeBalancedMedia();
+  window.addEventListener("resize", sizeBalancedMedia);
+  window.addEventListener("load", sizeBalancedMedia, { once: true });
+  document.fonts?.ready?.then(sizeBalancedMedia);
+}
+
+requestAnimationFrame(() => document.body.classList.add("page-ready"));
+
+document.addEventListener("click", (event) => {
+  const link = event.target.closest("a");
+  if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  const url = new URL(link.href, window.location.href);
+  if (url.origin !== window.location.origin || url.hash || link.target === "_blank" || url.protocol === "tel:" || url.protocol === "mailto:") return;
+  event.preventDefault();
+  document.body.classList.add("page-leaving");
+  window.setTimeout(() => {
+    window.location.href = url.href;
+  }, 300);
 });
 
 document.querySelectorAll("[data-review-carousel]").forEach((carousel) => {
@@ -203,6 +608,8 @@ document.querySelectorAll("[data-review-carousel]").forEach((carousel) => {
     });
     dots.forEach((dot, dotIndex) => {
       dot.classList.toggle("is-active", dotIndex === active);
+      dot.setAttribute("aria-label", `Show review ${dotIndex + 1}`);
+      dot.setAttribute("aria-current", dotIndex === active ? "true" : "false");
     });
   }
 
@@ -230,5 +637,139 @@ document.querySelectorAll("[data-review-carousel]").forEach((carousel) => {
     });
   });
 
+  carousel.addEventListener("mouseenter", () => clearInterval(timer));
+  carousel.addEventListener("mouseleave", restartTimer);
+  carousel.addEventListener("focusin", () => clearInterval(timer));
+  carousel.addEventListener("focusout", restartTimer);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) clearInterval(timer);
+    else restartTimer();
+  });
+
+  showReview(0);
   restartTimer();
 });
+
+const workGalleries = [...document.querySelectorAll(".work-gallery .gallery")];
+
+if (workGalleries.length) {
+  const galleryImages = workGalleries.flatMap((gallery) => [...gallery.querySelectorAll("img")]);
+  let lightboxIndex = 0;
+  let lightboxTrigger = null;
+
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `<div class="gallery-lightbox" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Gallery image viewer">
+      <button class="gallery-lightbox-close" type="button" aria-label="Close image viewer">×</button>
+      <button class="gallery-lightbox-prev" type="button" aria-label="Previous image">‹</button>
+      <img alt="">
+      <button class="gallery-lightbox-next" type="button" aria-label="Next image">›</button>
+    </div>`
+  );
+
+  const lightbox = document.querySelector(".gallery-lightbox");
+  const lightboxImage = lightbox.querySelector("img");
+  const closeButton = lightbox.querySelector(".gallery-lightbox-close");
+
+  function showLightboxImage(index) {
+    lightboxIndex = (index + galleryImages.length) % galleryImages.length;
+    const source = galleryImages[lightboxIndex];
+    lightboxImage.src = source.currentSrc || source.src;
+    lightboxImage.alt = source.alt;
+  }
+
+  function openLightbox(index) {
+    lightboxTrigger = document.activeElement;
+    showLightboxImage(index);
+    lightbox.classList.add("is-open");
+    lightbox.setAttribute("aria-hidden", "false");
+    document.body.classList.add("gallery-open");
+    document.querySelectorAll("header, main, footer").forEach((region) => {
+      region.inert = true;
+    });
+    closeButton.focus();
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove("is-open");
+    lightbox.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("gallery-open");
+    document.querySelectorAll("header, main, footer").forEach((region) => {
+      region.inert = false;
+    });
+    lightboxTrigger?.focus();
+  }
+
+  workGalleries.forEach((gallery, galleryIndex) => {
+    gallery.tabIndex = 0;
+    gallery.setAttribute("role", "region");
+    gallery.setAttribute("aria-label", `Scrollable gallery ${galleryIndex + 1}`);
+
+    const strip = document.createElement("div");
+    strip.className = "gallery-heading-strip";
+
+    const copy = document.createElement("div");
+    copy.className = "gallery-heading-copy";
+
+    const controls = document.createElement("div");
+    controls.className = "gallery-controls";
+    controls.innerHTML = `
+      <button class="gallery-control gallery-scroll-prev" type="button" aria-label="Scroll gallery left">←</button>
+      <button class="gallery-control gallery-scroll-next" type="button" aria-label="Scroll gallery right">→</button>
+    `;
+
+    const copyNodes = [];
+    let sibling = gallery.previousElementSibling;
+    while (sibling && (sibling.matches("h2") || sibling.matches("p") || sibling.matches(".slashes"))) {
+      copyNodes.unshift(sibling);
+      sibling = sibling.previousElementSibling;
+    }
+
+    const insertBefore = copyNodes[0] || gallery;
+    gallery.parentElement.insertBefore(strip, insertBefore);
+    copyNodes.forEach((node) => copy.appendChild(node));
+    strip.append(copy, controls);
+
+    const scrollAmount = () => gallery.clientWidth * .82;
+    controls.querySelector(".gallery-scroll-prev").addEventListener("click", () => gallery.scrollBy({ left: -scrollAmount(), behavior: "smooth" }));
+    controls.querySelector(".gallery-scroll-next").addEventListener("click", () => gallery.scrollBy({ left: scrollAmount(), behavior: "smooth" }));
+  });
+
+  galleryImages.forEach((image, index) => {
+    image.tabIndex = 0;
+    image.setAttribute("role", "button");
+    image.setAttribute("aria-label", `${image.alt || "Gallery image"} — open full size`);
+    image.addEventListener("click", () => openLightbox(index));
+    image.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openLightbox(index);
+      }
+    });
+  });
+
+  closeButton.addEventListener("click", closeLightbox);
+  lightbox.querySelector(".gallery-lightbox-prev").addEventListener("click", () => showLightboxImage(lightboxIndex - 1));
+  lightbox.querySelector(".gallery-lightbox-next").addEventListener("click", () => showLightboxImage(lightboxIndex + 1));
+  lightbox.addEventListener("click", (event) => {
+    if (event.target === lightbox) closeLightbox();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (!lightbox.classList.contains("is-open")) return;
+    if (event.key === "Escape") closeLightbox();
+    if (event.key === "ArrowLeft") showLightboxImage(lightboxIndex - 1);
+    if (event.key === "ArrowRight") showLightboxImage(lightboxIndex + 1);
+    if (event.key === "Tab") {
+      const focusable = [...lightbox.querySelectorAll("button:not([disabled])")];
+      const first = focusable[0];
+      const last = focusable.at(-1);
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    }
+  });
+}

@@ -3,9 +3,24 @@
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/sitemap.xml
+  Cache-Control: public, max-age=3600
+  X-Robots-Tag: noarchive
+
+/robots.txt
+  Cache-Control: public, max-age=3600
+
+/404.html
+  X-Robots-Tag: noindex
 
 /thank-you/
   X-Robots-Tag: noindex
+  Cache-Control: no-store
 
 /api/*
   Cache-Control: no-store

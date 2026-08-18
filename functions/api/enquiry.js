@@ -22,7 +22,9 @@ function escapeHtml(value) {
 }
 
 async function verifyTurnstile(token, env, request) {
-  if (!env.TURNSTILE_SECRET_KEY) return true;
+  if (!env.TURNSTILE_SECRET_KEY) {
+    throw new Error("Missing TURNSTILE_SECRET_KEY");
+  }
   if (!token) return false;
 
   const ip = request.headers.get("CF-Connecting-IP") || "";
@@ -44,9 +46,12 @@ async function sendEmail(fields, env, request) {
     throw new Error("Missing BREVO_API_KEY");
   }
 
+  const sender = env.BREVO_FROM_EMAIL || formConfig.sender;
+  const recipient = env.ENQUIRY_NOTIFICATION_TO || formConfig.recipient;
+  const siteName = env.ENQUIRY_SITE_NAME || formConfig.siteName;
   const submittedFrom = request.headers.get("Referer") || "Unknown page";
   const messageHtml = `
-    <h2>New AutoGlaze website enquiry</h2>
+    <h2>New ${escapeHtml(siteName)} enquiry</h2>
     <p><strong>Name:</strong> ${escapeHtml(fields.name)}</p>
     <p><strong>Company:</strong> ${escapeHtml(fields.company || "Not provided")}</p>
     <p><strong>Phone:</strong> ${escapeHtml(fields.phone)}</p>
@@ -64,10 +69,10 @@ async function sendEmail(fields, env, request) {
       "api-key": env.BREVO_API_KEY,
     },
     body: JSON.stringify({
-      sender: { email: formConfig.sender, name: formConfig.senderName },
-      to: [{ email: formConfig.recipient }],
+      sender: { email: sender, name: formConfig.senderName },
+      to: [{ email: recipient }],
       replyTo: { email: fields.email, name: fields.name },
-      subject: formConfig.subject,
+      subject: env.ENQUIRY_SUBJECT || formConfig.subject,
       htmlContent: messageHtml,
     }),
   });
@@ -78,6 +83,11 @@ async function sendEmail(fields, env, request) {
 }
 
 export async function onRequestPost({ request, env }) {
+  const contentLength = Number(request.headers.get("Content-Length") || 0);
+  if (contentLength > 50_000) {
+    return json({ ok: false, message: "The submitted form is too large." }, 413);
+  }
+
   let data;
   try {
     data = await request.formData();
@@ -106,12 +116,21 @@ export async function onRequestPost({ request, env }) {
     return json({ ok: false, message: "Please enter a valid email address." }, 400);
   }
 
-  const turnstileOk = await verifyTurnstile(text(data.get("cf-turnstile-response")), env, request);
-  if (!turnstileOk) {
-    return json({ ok: false, message: "The spam check did not complete. Please refresh and try again." }, 400);
+  if (
+    fields.name.length > 100 ||
+    fields.company.length > 120 ||
+    fields.phone.length > 30 ||
+    fields.email.length > 254 ||
+    fields.message.length > 3000
+  ) {
+    return json({ ok: false, message: "One or more fields are too long. Please shorten your message and try again." }, 400);
   }
 
   try {
+    const turnstileOk = await verifyTurnstile(text(data.get("cf-turnstile-response")), env, request);
+    if (!turnstileOk) {
+      return json({ ok: false, message: "The spam check did not complete. Please refresh and try again." }, 400);
+    }
     await sendEmail(fields, env, request);
     return json({ ok: true, redirect: "/thank-you/" });
   } catch (error) {
