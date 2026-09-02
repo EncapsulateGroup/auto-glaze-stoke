@@ -2196,7 +2196,7 @@ input::placeholder, textarea::placeholder { color: rgb(185, 191, 187); opacity: 
 
 .cta-band.text-cta { position: relative; width: 100%; min-height: 0px; margin: 0px; padding: clamp(80px, 10vw, 140px) max(7vw, -640px + 50vw); display: grid; grid-template-columns: minmax(0px, 1.2fr) minmax(300px, 0.8fr); align-items: start; gap: 28px clamp(48px, 8vw, 130px); overflow: hidden; border: 0px; border-radius: 0px; color: rgb(17, 19, 17); background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; background-color: rgb(238, 241, 236); text-align: left; background-image: none !important; }
 
-.cta-band.text-cta::before { content: "AUTOGLAZE  •  MOBILE SERVICE"; grid-column: 1 / -1; position: relative; z-index: 2; width: fit-content; padding-left: 42px; color: rgb(21, 123, 42); font-family: MontserratLocal, Arial, sans-serif; font-size: 0.75rem; font-weight: 750; line-height: 1; letter-spacing: 0.14em; }
+.cta-band.text-cta::before { content: "AUTOGLAZE  •  MOBILE SERVICE ON REQUEST"; grid-column: 1 / -1; position: relative; z-index: 2; width: fit-content; padding-left: 42px; color: rgb(21, 123, 42); font-family: MontserratLocal, Arial, sans-serif; font-size: 0.75rem; font-weight: 750; line-height: 1; letter-spacing: 0.14em; }
 
 .cta-band.text-cta::after { content: ""; position: absolute; top: 0px; right: 0px; width: clamp(12px, 2vw, 28px); height: 100%; background: var(--green); }
 
@@ -5271,4 +5271,17 @@ html body.contact-page main .contact-main .hours li:last-child span:first-child 
 
 html body.contact-page main .contact-main .hours li {
   border-bottom-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+@media (max-width: 390px) {
+  html body.home-page main > section.hero > .hero-content {
+    padding-inline: 0 !important;
+  }
+
+  html body.home-page main > section.hero h1 {
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: clamp(2.15rem, 9.6vw, 2.5rem) !important;
+    letter-spacing: -0.05em !important;
+  }
 }
